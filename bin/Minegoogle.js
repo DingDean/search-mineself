@@ -25,7 +25,6 @@ function parser ($) {
       if (text.match(/Searched for/)) {
         let content = $(ele).find('a').text()
         let url = $(ele).find('a').attr('href')
-        console.log($(ele).html().trim())
         let timeMatch = $(ele).html().match(/<br>(.*)$/)
         let time
         if (timeMatch && timeMatch.length >= 2) {
