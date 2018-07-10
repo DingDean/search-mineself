@@ -7,6 +7,7 @@ const path = require('path')
 const moment = require('moment')
 const cli = require('commander')
 const mongoose = require('mongoose')
+require('../src/database.js')
 
 
 /**
@@ -24,10 +25,13 @@ function parser ($) {
       if (text.match(/Searched for/)) {
         let content = $(ele).find('a').text()
         let url = $(ele).find('a').attr('href')
-        let match = $(ele).html().match(/<br>(.*)$/)
-        let time = null
-        if (match.length >= 2) {
-          time = new Date(match[1])
+        console.log($(ele).html().trim())
+        let timeMatch = $(ele).html().match(/<br>(.*)$/)
+        let time
+        if (timeMatch && timeMatch.length >= 2) {
+          time = new Date(timeMatch[1])
+        } else {
+          time = new Date(0)
         }
 
         searchItems.originalUrl = url
@@ -46,6 +50,8 @@ function parser ($) {
 
 function connectToDatabase (endpoint, callback) {
   function save (history, callback)  {
+    if (history.length === 0)
+      return callback('no history available')
     let writeops = history.map(r => {
       return {
         insertOne: {
@@ -56,7 +62,7 @@ function connectToDatabase (endpoint, callback) {
       }
     })
 
-    Mongoose.model('Search').bulkWrite(writeops, callback)
+    mongoose.model('Search').bulkWrite(writeops, callback)
   }
 
   mongoose
@@ -74,22 +80,24 @@ function connectToDatabase (endpoint, callback) {
 function main () {
   cli
     .command('parse <file>')
-    .option('--db', 'database endpoint')
+    .option('--db <endpoint>', 'database endpoint')
     .action(function (file, {db}) {
       if (!db)
         throw new Error('NEED to specify database')
-      console.log(db)
       connectToDatabase(db, function (err, save) {
         if (err)
           throw new Error(err)
         let fp = path.resolve(process.cwd(), file)
-        fs.readFile(fp, data => {
-          let $ = cheerio.load(data)
+        fs.readFile(fp, 'utf-8', (err, data) => {
+          if (err)
+            throw new Error(err)
+          let $ = cheerio.load(data.trim())
           let history = parser($)
           save(history, function (e, results) {
             if (e)
               throw new Error(e)
             console.log(`Parse complete: ${history.length} queries have been saved.`)
+            process.exit(0)
           })
         })
       })
