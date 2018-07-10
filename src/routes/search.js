@@ -2,6 +2,7 @@ const {passport} = require('../authentication.js')
 const mongoose = require('mongoose')
 const Search = mongoose.model('Search')
 const router = require('express').Router()
+const {getQuery} = require('../miner.js')
 
 router.use(passport.authenticate('jwt', {session: false}))
 router.post('/save', async (req, res, next) => {
@@ -13,7 +14,8 @@ router.post('/save', async (req, res, next) => {
     let query = getQuery(url)
     if (query) {
       let doc = new Search({
-        query, timestamp: new Date(), topic: 'na'
+        query, timestamp: new Date(), topic: 'na',
+        originalUrl: url
       })
       await doc.save()
     }
@@ -22,19 +24,5 @@ router.post('/save', async (req, res, next) => {
     next(e)
   }
 })
-
-function getQuery (url) {
-  let queries = url
-    .split('?')[1]
-    .split('&')
-    .reduce( (pre, cur) => {
-      let [key, value] = cur.split('=')
-      pre[key] = value
-      return pre
-    }, {})
-  if (queries.q)
-    return decodeURIComponent(queries.q)
-  return null
-}
 
 module.exports = router
