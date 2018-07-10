@@ -1,4 +1,4 @@
-const logger = require('./Logger.js')
+const logger = require('./logger.js')
 const jwt = require('jsonwebtoken')
 const passport = require('passport')
 const {Strategy, ExtractJwt} = require('passport-jwt')

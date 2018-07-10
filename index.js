@@ -1,5 +1,5 @@
 require('dotenv').config()
-const logger = require('./Logger.js')
+const logger = require('./src/logger.js')
 const express = require('express')
 const compression = require('compression')
 const path = require('path')
@@ -23,7 +23,7 @@ mongoose.connect(MONGO_URL, {
   logger.error(err)
   throw new Error(err)
 })
-require('./database.js')
+require('./src/database.js')
 
 /* Helmet */
 app.use(helmet())
@@ -34,7 +34,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 app.use(cookieParser())
 
-const routes = require('./routes')
+const routes = require('./src/routes')
 routes.forEach(function ({component, path}) {
   app.use(path, require(component))
 })
