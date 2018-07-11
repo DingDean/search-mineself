@@ -2,7 +2,7 @@ const {passport} = require('../authentication.js')
 const mongoose = require('mongoose')
 const Search = mongoose.model('Search')
 const router = require('express').Router()
-const {getQuery} = require('../miner.js')
+const {getQuery, getSource} = require('../miner.js')
 
 router.use(passport.authenticate('jwt', {session: false}))
 router.post('/save', async (req, res, next) => {
@@ -11,11 +11,15 @@ router.post('/save', async (req, res, next) => {
     return next({message: 'search NOT FOUND', status: 400})
   try {
     let {url} = search
-    let query = getQuery(url)
+    let source = getSource(url)
+    let query = getQuery(url, source)
     if (query) {
       let doc = new Search({
-        query, timestamp: new Date(), topic: 'na',
-        originalUrl: url
+        originalUrl: url,
+        source,
+        topic: 'na',
+        query, 
+        timestamp: new Date(), 
       })
       await doc.save()
     }
