@@ -29,7 +29,7 @@ Finally `npm start`
 
 ## TODOS
 
-- [ ] command-line tool to extract and save search history from Google Search Activity HTML
 - [ ] tokenize and label queries
 - [ ] build a heat map about all the tech related search queries
 - [ ] build a notification system to remind me the tech I've took interested in before but haven't been back on it for a while
+- [ ] command-line tool to extract and save search history from Google Search Activity HTML
