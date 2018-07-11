@@ -4,10 +4,13 @@ const targets = {
   'baidu': 'wd'
 }
 function getQuery (url, source) {
-  let queries = url
-    .split('?')[1]
+  let queries = url.split('?')
+  if (queries.length < 2) 
+    return null
+
+  queries = queries[1]
     .split('&')
-    .reduce( (pre, cur) => {
+    .reduce( (pre, cur) => { 
       let [key, value] = cur.split('=')
       pre[key] = value
       return pre

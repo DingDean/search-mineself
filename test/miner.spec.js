@@ -29,6 +29,10 @@ describe('getSource', function () {
 describe('getQuery', function () {
   let cases = [
     {
+      url: 'https://www.google.com/',
+      expect: null
+    },
+    {
       url: 'https://www.google.com/search?ei=ASY8W-LLBICx0PEP4fSGqAI&q=nodejs&oq=nodejs&gs_l=psy-ab.3..0i71k1l8.0.0.0.61677.0.0.0.0.0.0.0.0..0.0....0...1..64.psy-ab..0.0.0....0.w-tieqDewnE',
       source: 'google',
       expect: 'nodejs'
