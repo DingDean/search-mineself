@@ -6,8 +6,6 @@ const fs = require('fs')
 const path = require('path')
 const moment = require('moment')
 const cli = require('commander')
-const mongoose = require('mongoose')
-require('../src/database.js')
 
 
 /**
@@ -48,6 +46,9 @@ function parser ($) {
 }
 
 function connectToDatabase (endpoint, callback) {
+  const mongoose = require('mongoose')
+  require('../src/database.js')
+
   function save (history, callback)  {
     if (history.length === 0)
       return callback('no history available')
