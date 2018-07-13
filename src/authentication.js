@@ -4,7 +4,7 @@ const passport = require('passport')
 const {Strategy, ExtractJwt} = require('passport-jwt')
 
 let {JWT_SECRECT, SINGLE_TOKEN} = process.env
-if (!JWT_SECRECT && !SINGLE_TOKEN) {
+if (!JWT_SECRECT || !SINGLE_TOKEN) {
   throw new Error('Envirionment variable JWT_SECRECT or SINGLE_TOKEN NOT FOUND!')
 }
 const isProduction = process.env.NODE_ENV === 'production'
